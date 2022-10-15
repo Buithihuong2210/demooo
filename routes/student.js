@@ -2,6 +2,14 @@ const express = require('express')
 const StudentModel = require('../models/StudentModel')
 const router = express.Router()
 
+ router.get('/drop', (req, res) => {
+   StudentModel.deleteMany({}, () => {
+       console.log("Delete all data succeed !")
+       res.redirect('/student')
+   })
+})
+
+
 //URL: localhost:3000/student
 router.get('/', (req, res) => {
   StudentModel.find((err, data) => {
@@ -46,18 +54,26 @@ router.get('/delete/:id', (req, res) => {
 
 //render ra form ADD
 router.get('/add', (req, res) => {
-    res.render("student/new");
-})
+// C1: Dùng "save"
+   //     res.render("student/new");
+// })
 
-//nhận & xử lý dữ liệu từ form ADD
-router.post('/add', (req, res) => {
-   var student = new StudentModel(req.body)
-   student.save((err) => {
-      if (!err) {
-        console.log ("Add student succeed !")
-        res.redirect("/student")
-      }
-   })
+// //nhận & xử lý dữ liệu từ form ADD
+// router.post('/add', (req, res) => {
+//    var student = new StudentModel(req.body)
+//    student.save((err) => {
+//       if (!err) {
+//         console.log ("Add student succeed !")
+//         res.redirect("/student")
+//       }
+//    })
+//c2: dùng "create"
+StudentModel.create(req.body, (err) => {
+   if (!err) {
+       console.log('Add student succeed !')
+       res.redirect("/student")
+   }
+})
 })
 
 //render ra form EDIT
@@ -113,8 +129,6 @@ router.get('/sort/desc', (req, res) => {
                   }
                })
 })
-
-
 
 
 
